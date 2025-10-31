@@ -165,12 +165,6 @@ Sampada
 - Email: sampadapawate@gmail.com
 - GitHub: https://github.com/SampadaPawate/Lexsy_Document_Filler
 
-## 🙏 Acknowledgments
 
-Built as part of the Lexsy Full-Stack Engineer application.
 
----
 
-## 📧 Support
-
-For questions or issues, please open an issue on GitHub or contact [your-email].
