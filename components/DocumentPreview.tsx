@@ -37,7 +37,13 @@ export default function DocumentPreview({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate document');
+        let message = 'Failed to generate document';
+        try {
+          const errJson = await response.json();
+          if (errJson?.error) message = errJson.error;
+          if (errJson?.details) message += `: ${errJson.details}`;
+        } catch {}
+        throw new Error(message);
       }
 
       const data = await response.json();

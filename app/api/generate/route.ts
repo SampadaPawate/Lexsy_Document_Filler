@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
     console.log('[Generate API] Document ID:', documentId);
     console.log('[Generate API] Filled placeholders:', JSON.stringify(filledPlaceholders, null, 2));
     console.log('[Generate API] Original placeholders:', placeholders?.map((p: any) => p.original).join(', '));
+    console.log('[Generate API] templateBase64 present:', !!templateBase64, 'len:', templateBase64?.length || 0);
 
     if (!documentId || !filledPlaceholders) {
       return NextResponse.json(
