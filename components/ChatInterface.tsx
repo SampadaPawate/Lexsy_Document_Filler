@@ -24,10 +24,16 @@ export default function ChatInterface({
   const [loading, setLoading] = useState(false);
   const [conversationState, setConversationState] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Initialize chat with first message
   useEffect(() => {
     initializeChat();
+  }, []);
+
+  // Keep input focused for better UX
+  useEffect(() => {
+    inputRef.current?.focus();
   }, []);
 
   // Auto-scroll to bottom when new messages arrive
@@ -54,6 +60,8 @@ export default function ChatInterface({
       console.error('Failed to initialize chat:', error);
     } finally {
       setLoading(false);
+      // Re-focus input after response
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 
@@ -62,6 +70,8 @@ export default function ChatInterface({
 
     const userMessage = input.trim();
     setInput('');
+    // Keep focus when sending
+    setTimeout(() => inputRef.current?.focus(), 0);
     setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
 
@@ -185,6 +195,7 @@ export default function ChatInterface({
             onKeyPress={handleKeyPress}
             placeholder="Type your response..."
             disabled={loading}
+            ref={inputRef}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent disabled:bg-gray-100"
             style={{ 
               backgroundColor: '#FFFFFF',
