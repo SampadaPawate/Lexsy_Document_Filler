@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
+import { readFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { generateDocument } from '@/lib/documentGenerator';
 
@@ -39,8 +39,14 @@ export async function POST(request: NextRequest) {
     const filledBuffer = await generateDocument(buffer, filledPlaceholders, placeholders || []);
     console.log('[Generate API] Generated file size:', filledBuffer.length);
 
+    // Ensure /tmp/uploads exists (functions may run on different instances)
+    const outDir = join('/tmp', 'uploads');
+    try {
+      await mkdir(outDir, { recursive: true });
+    } catch {}
+
     // Save filled document to /tmp
-    const outputPath = join('/tmp', 'uploads', `${documentId}-filled.docx`);
+    const outputPath = join(outDir, `${documentId}-filled.docx`);
     await require('fs/promises').writeFile(outputPath, filledBuffer);
     console.log('[Generate API] Saved to:', outputPath);
 
