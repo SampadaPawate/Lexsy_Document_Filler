@@ -63,6 +63,25 @@ export interface ConversationState {
   currentPlaceholderIndex: number;
 }
 
+function isValidForType(expectedType: string | undefined, value: string): boolean {
+  const v = value.trim();
+  switch ((expectedType || 'text').toLowerCase()) {
+    case 'number':
+      return /^[-+]?\d+(,\d{3})*(\.\d+)?$/.test(v) || /^\d+(\.\d+)?$/.test(v);
+    case 'date':
+      return /\b(\d{4}-\d{2}-\d{2}|\d{2}[\/.-]\d{2}[\/.-]\d{4}|\w+ \d{1,2}, \d{4})\b/.test(v);
+    case 'email':
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    case 'name':
+      return /[a-zA-Z]{2,}(\s+[a-zA-Z.'-]{2,})*/.test(v) && v.length >= 2;
+    case 'country':
+      return /[A-Za-z][A-Za-z\s.'-]{1,}/.test(v) && v.length >= 3 && !/^ok$/i.test(v);
+    case 'text':
+    default:
+      return v.length > 0;
+  }
+}
+
 /**
  * Generates a system prompt for the AI assistant
  */
@@ -127,30 +146,49 @@ export async function processChatMessage(
     console.log('[AI Service] Calling Gemini API...');
     console.log('[AI Service] API Key present:', !!process.env.GEMINI_API_KEY);
     
+    const currentPlaceholder = placeholders[currentPlaceholderIndex];
+    const nextPlaceholder = placeholders[currentPlaceholderIndex + 1];
+
+    // Validate before moving on
+    if (currentPlaceholder) {
+      const expectedType = (currentPlaceholder as any).type as string | undefined;
+      if (!isValidForType(expectedType, userMessage)) {
+        const typeLabel = (expectedType || 'text').toLowerCase();
+        const hint = typeLabel === 'date'
+          ? 'Use a date like 2025-10-31 or Oct 31, 2025.'
+          : typeLabel === 'number'
+          ? 'Provide a number (e.g., 50000 or 50,000).'
+          : typeLabel === 'email'
+          ? 'Provide a valid email address.'
+          : typeLabel === 'country'
+          ? 'Provide the country name (e.g., United States, India).'
+          : typeLabel === 'name'
+          ? 'Provide a full name (e.g., John Smith).'
+          : 'Please provide a meaningful answer.';
+
+        return {
+          response: `That doesn't look like a valid ${typeLabel}. ${hint}`,
+          updatedState: conversationState,
+        };
+      }
+    }
+
     const genAI = getGemini();
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.0-flash',
       generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 500,
+        temperature: 0.4,
+        maxOutputTokens: 160,
       },
     });
 
-    // Simple, direct prompt
-    const currentPlaceholder = placeholders[currentPlaceholderIndex];
-    const nextPlaceholder = placeholders[currentPlaceholderIndex + 1];
-    
     let prompt = '';
     if (currentPlaceholder) {
-      prompt = `The user just provided: "${userMessage}"
+      prompt = `You are a precise legal intake assistant. Acknowledge the user's answer in one short sentence. Then ${nextPlaceholder ? `ask ONLY the next field: "${nextPlaceholder.description}". Do not ask anything else.` : 'say everything is complete briefly.'}
 
-This answers the field: ${currentPlaceholder.description}
-
-Acknowledge their answer briefly and ${nextPlaceholder ? `ask for the next field: "${nextPlaceholder.description}". Be specific about what you need.` : 'let them know all fields are complete!'}
-
-Keep your response short and friendly.`;
+Context:\nCurrent field: ${currentPlaceholder.description}\nUser answer: "${userMessage}"`;
     } else {
-      prompt = `All fields are filled! Thank them and let them know they can generate the document.`;
+      prompt = `All fields are filled. Thank them and say they can generate the document.`;
     }
 
     console.log('[AI Service] Sending prompt for field', currentPlaceholderIndex + 1, 'of', placeholders.length);
@@ -175,10 +213,13 @@ Keep your response short and friendly.`;
   // If we have a current placeholder and user provided a non-empty message
   if (placeholders[currentPlaceholderIndex] && userMessage.trim().length > 0) {
     const currentPlaceholder = placeholders[currentPlaceholderIndex];
-    
-    // Use the user's message as the value
-    newFilledPlaceholders[currentPlaceholder.key] = userMessage.trim();
-    newIndex = currentPlaceholderIndex + 1;
+    const expectedType = (currentPlaceholder as any).type as string | undefined;
+    if (isValidForType(expectedType, userMessage)) {
+      newFilledPlaceholders[currentPlaceholder.key] = userMessage.trim();
+      newIndex = currentPlaceholderIndex + 1;
+    } else {
+      newIndex = currentPlaceholderIndex; // stay on same field
+    }
     
     console.log(`[AI Service] Captured value for ${currentPlaceholder.key}: "${userMessage.trim()}"`);
     console.log(`[AI Service] Moving to placeholder ${newIndex} of ${placeholders.length}`);

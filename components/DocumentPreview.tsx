@@ -19,6 +19,7 @@ export default function DocumentPreview({
   const [generating, setGenerating] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [filledBase64, setFilledBase64] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     setGenerating(true);
@@ -48,6 +49,10 @@ export default function DocumentPreview({
 
       const data = await response.json();
       setDownloadUrl(data.downloadUrl);
+      if (data.filledBase64) setFilledBase64(data.filledBase64);
+      if (data.fileName) {
+        // optional future use
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to generate document');
     } finally {
@@ -56,6 +61,26 @@ export default function DocumentPreview({
   };
 
   const handleDownload = () => {
+    if (filledBase64) {
+      try {
+        const byteChars = atob(filledBase64);
+        const byteNumbers = new Array(byteChars.length);
+        for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'completed-document.docx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        return;
+      } catch (e) {
+        console.error('Base64 download failed, falling back to API:', e);
+      }
+    }
     if (downloadUrl) {
       window.location.href = downloadUrl;
     }

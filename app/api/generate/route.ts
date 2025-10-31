@@ -50,10 +50,13 @@ export async function POST(request: NextRequest) {
     await require('fs/promises').writeFile(outputPath, filledBuffer);
     console.log('[Generate API] Saved to:', outputPath);
 
-    // Return download URL
+    // Return download URL and base64 inline for client-side download fallback
+    const filledBase64 = filledBuffer.toString('base64');
     return NextResponse.json({
       success: true,
       downloadUrl: `/api/download/${documentId}`,
+      filledBase64,
+      fileName: 'completed-document.docx',
     });
   } catch (error: any) {
     console.error('[Generate API] Error:', error);
