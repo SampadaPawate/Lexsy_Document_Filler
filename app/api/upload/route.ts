@@ -50,17 +50,18 @@ export async function POST(request: NextRequest) {
     // Generate unique document ID
     const documentId = randomUUID();
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
+    // Use /tmp directory (writable on Vercel)
+    const uploadsDir = join('/tmp', 'uploads');
     try {
       await mkdir(uploadsDir, { recursive: true });
     } catch (error) {
       // Directory might already exist, ignore error
     }
 
-    // Save file to disk
+    // Save file to /tmp (Vercel allows writing here)
     const filePath = join(uploadsDir, `${documentId}.docx`);
     await writeFile(filePath, buffer);
+    console.log('[Upload API] File saved to:', filePath);
 
     // Parse document and extract placeholders
     console.log('[Upload API] Parsing document...');

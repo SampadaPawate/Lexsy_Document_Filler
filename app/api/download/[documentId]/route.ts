@@ -16,13 +16,8 @@ export async function GET(
       );
     }
 
-    // Read filled document
-    const filePath = join(
-      process.cwd(),
-      'public',
-      'uploads',
-      `${documentId}-filled.docx`
-    );
+    // Read filled document from /tmp (Vercel writable directory)
+    const filePath = join('/tmp', 'uploads', `${documentId}-filled.docx`);
     
     const buffer = await readFile(filePath);
 

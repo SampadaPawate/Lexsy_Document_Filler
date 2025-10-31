@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read original document
-    const filePath = join(process.cwd(), 'public', 'uploads', `${documentId}.docx`);
+    // Read original document from /tmp (Vercel writable directory)
+    const filePath = join('/tmp', 'uploads', `${documentId}.docx`);
     console.log('[Generate API] Reading original from:', filePath);
     const buffer = await readFile(filePath);
     console.log('[Generate API] Original file size:', buffer.length);
@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
     const filledBuffer = await generateDocument(buffer, filledPlaceholders, placeholders || []);
     console.log('[Generate API] Generated file size:', filledBuffer.length);
 
-    // Save filled document
-    const outputPath = join(process.cwd(), 'public', 'uploads', `${documentId}-filled.docx`);
+    // Save filled document to /tmp
+    const outputPath = join('/tmp', 'uploads', `${documentId}-filled.docx`);
     await require('fs/promises').writeFile(outputPath, filledBuffer);
     console.log('[Generate API] Saved to:', outputPath);
 
