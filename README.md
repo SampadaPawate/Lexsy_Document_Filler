@@ -1,36 +1,259 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lexsy Document Filler
 
-## Getting Started
+An AI-powered web application that automates legal document completion using conversational AI. Built specifically for SAFE (Simple Agreement for Future Equity) agreements.
 
-First, run the development server:
+## 🚀 Live Demo
+
+[Your deployed URL here]
+
+## 📹 Demo Video
+
+[Link to Loom video walkthrough]
+
+## ✨ Features
+
+- **Drag & Drop Upload**: Easy document upload with .docx support
+- **AI-Powered Chat**: Conversational interface to guide users through filling document fields
+- **Smart Placeholder Detection**: Automatically identifies fields that need to be filled
+- **Real-time Progress Tracking**: Visual progress bar showing completion status
+- **Document Generation**: Creates a completed .docx file ready for download
+- **Clean UI/UX**: Professional, modern interface built with Tailwind CSS
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 14 (App Router), React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes (serverless functions)
+- **AI**: OpenAI GPT-4
+- **Document Processing**: 
+  - mammoth.js (parsing .docx files)
+  - pizzip + docxtemplater (generating filled documents)
+- **File Upload**: react-dropzone
+- **Deployment**: Vercel (recommended)
+
+## 📋 Prerequisites
+
+- Node.js 18+ and npm
+- OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
+
+## 🏃 Quick Start
+
+### 1. Clone the Repository
+
+```bash
+git clone [your-repo-url]
+cd lexsy-document-filler
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Set Up Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` and add your OpenAI API key:
+
+```env
+OPENAI_API_KEY=sk-your-actual-api-key-here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 5. Test the Application
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Upload the provided SAFE agreement document
+2. Follow the AI assistant's prompts to fill in the fields
+3. Review and download the completed document
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+lexsy-document-filler/
+├── app/
+│   ├── api/
+│   │   ├── upload/         # Document upload endpoint
+│   │   ├── chat/           # AI chat endpoint
+│   │   ├── generate/       # Document generation endpoint
+│   │   └── download/       # Download endpoint
+│   ├── chat/[documentId]/  # Chat page
+│   └── page.tsx            # Home/upload page
+├── components/
+│   ├── FileUpload.tsx      # Drag & drop upload component
+│   ├── ChatInterface.tsx   # Chat UI component
+│   └── DocumentPreview.tsx # Preview and download component
+├── lib/
+│   ├── documentParser.ts   # .docx parsing and placeholder extraction
+│   ├── aiService.ts        # OpenAI integration
+│   └── documentGenerator.ts # Document generation logic
+├── public/
+│   └── uploads/            # Temporary document storage
+└── README.md
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚢 Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Deploy to Vercel (Recommended)
 
-## Deploy on Vercel
+1. **Push to GitHub**:
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin [your-github-repo-url]
+git push -u origin main
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Deploy on Vercel**:
+   - Go to [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Add environment variable: `OPENAI_API_KEY`
+   - Click Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Your app will be live at**: `https://your-app.vercel.app`
+
+### Alternative: Deploy to Railway
+
+```bash
+# Install Railway CLI
+npm i -g @railway/cli
+
+# Login
+railway login
+
+# Initialize project
+railway init
+
+# Add environment variables
+railway variables set OPENAI_API_KEY=your-key-here
+
+# Deploy
+railway up
+```
+
+## 🔧 Configuration
+
+### Supported Document Formats
+
+Currently supports `.docx` files with placeholders in these formats:
+- `[Placeholder Name]`
+- `{{placeholder}}`
+- `______` (blank lines)
+
+### API Configuration
+
+All API routes are serverless functions that run on-demand:
+
+- **POST /api/upload** - Accepts .docx file, returns parsed placeholders
+- **POST /api/chat** - Processes chat messages and updates conversation state
+- **POST /api/generate** - Generates filled document
+- **GET /api/download/[documentId]** - Downloads completed document
+
+### AI Model Configuration
+
+The app uses `gpt-4o-mini` by default for cost efficiency. To use GPT-4 for better accuracy:
+
+Edit `lib/aiService.ts`:
+```typescript
+model: 'gpt-4' // Change from 'gpt-4o-mini'
+```
+
+## 🧪 Testing
+
+### Manual Testing Steps
+
+1. **Upload Test**:
+   - Upload the sample SAFE document
+   - Verify placeholders are detected correctly
+
+2. **Chat Flow Test**:
+   - Answer each question from the AI
+   - Verify progress bar updates
+   - Check that values are captured correctly
+
+3. **Download Test**:
+   - Generate the completed document
+   - Download and open in Word
+   - Verify all placeholders are filled correctly
+
+### Sample Test Data
+
+For the SAFE agreement:
+- Company Name: "Acme Corporation"
+- Investor Name: "Jane Investor"
+- Purchase Amount: "$100,000"
+- Valuation Cap: "$5,000,000"
+- Date: "12/31/2024"
+
+## 📝 How It Works
+
+### 1. Document Upload
+- User uploads .docx file
+- Server parses document using mammoth.js
+- Regex patterns identify placeholders
+- Placeholders are returned to frontend
+
+### 2. Conversational Filling
+- AI generates first question based on placeholders
+- User responds to each question
+- AI extracts values and asks next question
+- Progress tracked in real-time
+
+### 3. Document Generation
+- All placeholder values sent to server
+- docxtemplater fills in values
+- New .docx generated and saved
+- Download link provided to user
+
+## 🔒 Security Considerations
+
+- Documents stored temporarily in `/public/uploads/`
+- Files should be cleaned up after download (implement cleanup cron)
+- API routes should be rate-limited in production
+- Consider implementing user authentication for production use
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Issue**: "Failed to process document"
+- **Solution**: Ensure the file is a valid .docx file (not .doc)
+
+**Issue**: "OpenAI API error"
+- **Solution**: Check that your API key is valid and has credits
+
+**Issue**: "Document download fails"
+- **Solution**: Ensure the `/public/uploads/` directory exists and is writable
+
+## 📄 License
+
+MIT License - feel free to use this for your projects!
+
+## 👤 Author
+
+[Your Name]
+- Email: [your-email@example.com]
+- GitHub: [your-github-username]
+
+## 🙏 Acknowledgments
+
+Built as part of the Lexsy Full-Stack Engineer application.
+
+---
+
+## 📧 Support
+
+For questions or issues, please open an issue on GitHub or contact [your-email].

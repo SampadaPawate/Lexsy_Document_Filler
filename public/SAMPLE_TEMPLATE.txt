@@ -1,0 +1,111 @@
+==========================================
+SAMPLE SAFE AGREEMENT TEMPLATE
+==========================================
+
+To create a test document:
+
+1. Open Microsoft Word
+2. Copy the text below
+3. Paste it into Word
+4. Save as "test-safe.docx"
+5. Upload to the app!
+
+==========================================
+
+SAFE AGREEMENT
+(Simple Agreement for Future Equity)
+
+
+THIS CERTIFIES THAT in exchange for the payment by [Investor Name] (the "Investor") of $[Purchase Amount] (the "Purchase Amount") on or about [Date of SAFE], [Company Name], a [State of Incorporation] corporation (the "Company"), issues to the Investor the right to certain shares of the Company's Capital Stock.
+
+The "Post-Money Valuation Cap" is $[Valuation Cap].
+
+
+COMPANY INFORMATION:
+--------------------
+Company Name: [Company Name]
+Company Address: [Company Address]
+Company Email: [Company Email]
+
+
+INVESTOR INFORMATION:
+---------------------
+Investor Name: [Investor Name]
+Investor Address: [Investor Address]
+Investor Email: [Investor Email]
+
+
+INVESTMENT DETAILS:
+-------------------
+Purchase Amount: $[Purchase Amount]
+Valuation Cap: $[Valuation Cap]
+Date of SAFE: [Date of SAFE]
+State of Incorporation: [State of Incorporation]
+Governing Law: [Governing Law Jurisdiction]
+
+
+SIGNATURE PAGE
+--------------
+
+COMPANY:
+
+By: _______________________________
+Name: [Company Representative Name]
+Title: [Company Representative Title]
+Date: [Signature Date]
+
+
+INVESTOR:
+
+By: _______________________________
+Name: [Investor Name]
+Address: [Investor Address]
+
+
+==========================================
+SAMPLE TEST DATA TO USE:
+==========================================
+
+When the AI asks questions, use these values:
+
+Company Name: Acme Corporation
+Company Address: 123 Tech Street, San Francisco, CA 94105
+Company Email: info@acmecorp.com
+
+Investor Name: Jane Investor
+Investor Address: 456 Investment Ave, New York, NY 10001
+Investor Email: jane@investor.com
+
+Purchase Amount: 100000
+Valuation Cap: 5000000
+Date of SAFE: 2024-12-31
+State of Incorporation: Delaware
+Governing Law Jurisdiction: Delaware
+
+Company Representative Name: John Smith
+Company Representative Title: CEO
+Signature Date: 2024-12-31
+
+==========================================
+
+PLACEHOLDERS DETECTED:
+The app will find these placeholders:
+- [Company Name]
+- [Company Address]
+- [Company Email]
+- [Investor Name]
+- [Investor Address]
+- [Investor Email]
+- [Purchase Amount]
+- [Valuation Cap]
+- [Date of SAFE]
+- [State of Incorporation]
+- [Governing Law Jurisdiction]
+- [Company Representative Name]
+- [Company Representative Title]
+- [Signature Date]
+
+Total: 14 fields to fill
+
+==========================================
+
