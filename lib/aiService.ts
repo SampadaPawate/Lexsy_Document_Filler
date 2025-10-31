@@ -4,8 +4,50 @@ import { Placeholder } from './documentParser';
 let genAI: GoogleGenerativeAI | null = null;
 
 function getGemini() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  // Debug logging for production
+  console.log('[AI Service] Environment check:', {
+    nodeEnv: process.env.NODE_ENV,
+    hasApiKey: !!apiKey,
+    apiKeyLength: apiKey?.length || 0,
+    apiKeyPrefix: apiKey ? apiKey.substring(0, 8) + '...' : 'NOT SET',
+  });
+  
+  if (!apiKey || apiKey.trim() === '') {
+    const errorMsg = `
+╔═══════════════════════════════════════════════════════════╗
+║ ❌ MISSING ENVIRONMENT VARIABLE: GEMINI_API_KEY          ║
+╠═══════════════════════════════════════════════════════════╣
+║ The GEMINI_API_KEY environment variable is not set.      ║
+║                                                           ║
+║ 🔧 TO FIX THIS IN VERCEL:                                ║
+║                                                           ║
+║ 1. Go to: vercel.com/your-project/settings/              ║
+║    environment-variables                                  ║
+║                                                           ║
+║ 2. Add:                                                   ║
+║    Name: GEMINI_API_KEY                                   ║
+║    Value: Your API key from ai.google.dev                ║
+║                                                           ║
+║ 3. Check ALL environments:                                ║
+║    ✅ Production                                          ║
+║    ✅ Preview                                             ║
+║    ✅ Development                                         ║
+║                                                           ║
+║ 4. REDEPLOY your application!                             ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+    `.trim();
+    
+    console.error(errorMsg);
+    throw new Error('GEMINI_API_KEY environment variable is not set. Please configure it in Vercel settings.');
+  }
+  
   if (!genAI) {
-    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+    console.log('[AI Service] Initializing Google Generative AI client...');
+    genAI = new GoogleGenerativeAI(apiKey);
+    console.log('[AI Service] ✅ Client initialized successfully');
   }
   return genAI;
 }

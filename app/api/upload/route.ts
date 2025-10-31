@@ -5,16 +5,27 @@ import { join } from 'path';
 import { randomUUID } from 'crypto';
 
 export async function POST(request: NextRequest) {
+  console.log('[Upload API] Request received');
+  console.log('[Upload API] Environment:', process.env.NODE_ENV);
+  console.log('[Upload API] GEMINI_API_KEY present:', !!process.env.GEMINI_API_KEY);
+  
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
     if (!file) {
+      console.error('[Upload API] No file provided in request');
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
       );
     }
+    
+    console.log('[Upload API] File received:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
 
     // Validate file type
     if (!file.name.endsWith('.docx')) {
@@ -52,7 +63,10 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, buffer);
 
     // Parse document and extract placeholders
+    console.log('[Upload API] Parsing document...');
     const parsedDocument = await parseDocument(buffer, documentId);
+    console.log('[Upload API] ✅ Document parsed successfully');
+    console.log('[Upload API] Found placeholders:', parsedDocument.placeholders.length);
 
     // Return parsed data (without full text to reduce payload)
     return NextResponse.json({
@@ -61,10 +75,32 @@ export async function POST(request: NextRequest) {
       placeholders: parsedDocument.placeholders,
       fileName: file.name,
     });
-  } catch (error) {
-    console.error('Upload error:', error);
+  } catch (error: any) {
+    console.error('═══════════════════════════════════════════════════');
+    console.error('❌ [Upload API] ERROR:', error);
+    console.error('Error name:', error?.name);
+    console.error('Error message:', error?.message);
+    console.error('Error stack:', error?.stack);
+    console.error('═══════════════════════════════════════════════════');
+    
+    // Check if it's an environment variable error
+    if (error?.message?.includes('GEMINI_API_KEY')) {
+      return NextResponse.json(
+        { 
+          error: 'Missing API Configuration',
+          details: 'GEMINI_API_KEY environment variable is not set. Please configure it in Vercel settings and redeploy.',
+          fix: 'Go to Vercel → Settings → Environment Variables → Add GEMINI_API_KEY'
+        },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to process document' },
+      { 
+        error: 'Failed to process document',
+        details: error?.message || 'Unknown error',
+        type: error?.name || 'UnknownError'
+      },
       { status: 500 }
     );
   }
