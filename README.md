@@ -2,14 +2,6 @@
 
 An AI-powered web application that automates legal document completion using conversational AI. Built specifically for SAFE (Simple Agreement for Future Equity) agreements.
 
-## 🚀 Live Demo
-
-[Your deployed URL here]
-
-## 📹 Demo Video
-
-[Link to Loom video walkthrough]
-
 ## ✨ Features
 
 - **Drag & Drop Upload**: Easy document upload with .docx support
@@ -75,7 +67,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### 5. Test the Application
 
-1. Upload the provided SAFE agreement document
+1. Upload the  document
 2. Follow the AI assistant's prompts to fill in the fields
 3. Review and download the completed document
 
@@ -104,45 +96,6 @@ lexsy-document-filler/
 └── README.md
 ```
 
-## 🚢 Deployment
-
-### Deploy to Vercel (Recommended)
-
-1. **Push to GitHub**:
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin [your-github-repo-url]
-git push -u origin main
-```
-
-2. **Deploy on Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Add environment variable: `OPENAI_API_KEY`
-   - Click Deploy
-
-3. **Your app will be live at**: `https://your-app.vercel.app`
-
-### Alternative: Deploy to Railway
-
-```bash
-# Install Railway CLI
-npm i -g @railway/cli
-
-# Login
-railway login
-
-# Initialize project
-railway init
-
-# Add environment variables
-railway variables set OPENAI_API_KEY=your-key-here
-
-# Deploy
-railway up
-```
 
 ## 🔧 Configuration
 
@@ -161,42 +114,6 @@ All API routes are serverless functions that run on-demand:
 - **POST /api/chat** - Processes chat messages and updates conversation state
 - **POST /api/generate** - Generates filled document
 - **GET /api/download/[documentId]** - Downloads completed document
-
-### AI Model Configuration
-
-The app uses `gpt-4o-mini` by default for cost efficiency. To use GPT-4 for better accuracy:
-
-Edit `lib/aiService.ts`:
-```typescript
-model: 'gpt-4' // Change from 'gpt-4o-mini'
-```
-
-## 🧪 Testing
-
-### Manual Testing Steps
-
-1. **Upload Test**:
-   - Upload the sample SAFE document
-   - Verify placeholders are detected correctly
-
-2. **Chat Flow Test**:
-   - Answer each question from the AI
-   - Verify progress bar updates
-   - Check that values are captured correctly
-
-3. **Download Test**:
-   - Generate the completed document
-   - Download and open in Word
-   - Verify all placeholders are filled correctly
-
-### Sample Test Data
-
-For the SAFE agreement:
-- Company Name: "Acme Corporation"
-- Investor Name: "Jane Investor"
-- Purchase Amount: "$100,000"
-- Valuation Cap: "$5,000,000"
-- Date: "12/31/2024"
 
 ## 📝 How It Works
 
@@ -244,9 +161,9 @@ MIT License - feel free to use this for your projects!
 
 ## 👤 Author
 
-[Your Name]
-- Email: [your-email@example.com]
-- GitHub: [your-github-username]
+Sampada
+- Email: sampadapawate@gmail.com
+- GitHub: https://github.com/SampadaPawate/Lexsy_Document_Filler
 
 ## 🙏 Acknowledgments
 
