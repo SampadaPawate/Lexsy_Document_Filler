@@ -94,6 +94,7 @@ export default function ChatPage() {
                 documentId={documentId}
                 filledPlaceholders={filledPlaceholders}
                 placeholders={documentData.placeholders}
+                templateBase64={documentData.templateBase64}
               />
             </div>
           ) : (

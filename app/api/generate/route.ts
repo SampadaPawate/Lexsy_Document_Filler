@@ -6,7 +6,7 @@ import { generateDocument } from '@/lib/documentGenerator';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { documentId, filledPlaceholders, placeholders } = body;
+    const { documentId, filledPlaceholders, placeholders, templateBase64 } = body;
 
     console.log('[Generate API] Request received');
     console.log('[Generate API] Document ID:', documentId);
@@ -20,10 +20,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read original document from /tmp (Vercel writable directory)
-    const filePath = join('/tmp', 'uploads', `${documentId}.docx`);
-    console.log('[Generate API] Reading original from:', filePath);
-    const buffer = await readFile(filePath);
+    // Get original template buffer
+    let buffer: Buffer;
+    if (templateBase64 && typeof templateBase64 === 'string') {
+      console.log('[Generate API] Using template from request (base64)');
+      buffer = Buffer.from(templateBase64, 'base64');
+    } else {
+      // Fallback to /tmp (same instance) - best effort only
+      const filePath = join('/tmp', 'uploads', `${documentId}.docx`);
+      console.log('[Generate API] Reading original from:', filePath);
+      buffer = await readFile(filePath);
+    }
     console.log('[Generate API] Original file size:', buffer.length);
 
     // Generate filled document with original placeholder info

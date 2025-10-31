@@ -7,12 +7,14 @@ interface DocumentPreviewProps {
   documentId: string;
   filledPlaceholders: Record<string, string>;
   placeholders: Placeholder[];
+  templateBase64?: string;
 }
 
 export default function DocumentPreview({
   documentId,
   filledPlaceholders,
   placeholders,
+  templateBase64,
 }: DocumentPreviewProps) {
   const [generating, setGenerating] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
@@ -30,6 +32,7 @@ export default function DocumentPreview({
           documentId,
           filledPlaceholders,
           placeholders, // Send original placeholder info
+          templateBase64, // Provide template to avoid filesystem
         }),
       });
 

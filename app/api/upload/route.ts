@@ -69,12 +69,14 @@ export async function POST(request: NextRequest) {
     console.log('[Upload API] ✅ Document parsed successfully');
     console.log('[Upload API] Found placeholders:', parsedDocument.placeholders.length);
 
-    // Return parsed data (without full text to reduce payload)
+    // Return parsed data and base64 for stateless generation
+    const templateBase64 = buffer.toString('base64');
     return NextResponse.json({
       success: true,
       documentId,
       placeholders: parsedDocument.placeholders,
       fileName: file.name,
+      templateBase64,
     });
   } catch (error: any) {
     console.error('═══════════════════════════════════════════════════');
